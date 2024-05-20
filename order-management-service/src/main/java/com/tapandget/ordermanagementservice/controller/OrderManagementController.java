@@ -4,6 +4,7 @@ import com.tapandget.ordermanagementservice.bean.ProductBean;
 import com.tapandget.ordermanagementservice.dto.OrderDTO;
 import com.tapandget.ordermanagementservice.entity.Order;
 import com.tapandget.ordermanagementservice.repository.OrderManagementRepository;
+import com.tapandget.ordermanagementservice.utils.WarehouseManagementProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +28,21 @@ public class OrderManagementController {
     @Autowired
     OrderManagementRepository orderManagementRepository;
 
+    @Autowired
+    WarehouseManagementProxy warehouseManagementProxy;
+
     @GetMapping(path="/{id}")
     public OrderDTO findOrderById(@PathVariable("id") Long id){
 
         logger.info("Start findOrderById service");
 
-        Order order = orderManagementRepository.findById(new BigDecimal(id)).orElseThrow();
+        Order order = orderManagementRepository.findById(new BigDecimal(id)).orElse(null);
 
         if(order != null){
             logger.info("Found order with id " + id);
             logger.info("Searching for product with id " + order.getProductId());
 
-            Map<String, Long> parameters = new HashMap<>();
-            parameters.put("id", order.getProductId().longValue());
-
-            ResponseEntity<ProductBean> responseEntity =
-                    new RestTemplate().getForEntity("http://localhost:8003/warehouse/{id}", ProductBean.class,parameters);
-
-            ProductBean productBean = responseEntity.getBody();
+            ProductBean productBean = warehouseManagementProxy.findyById(order.getProductId());
 
             OrderDTO response = new OrderDTO();
             response.setId(order.getId());
@@ -52,6 +50,7 @@ public class OrderManagementController {
             response.setStatus(order.getStatus());
             response.setCodeProduct(productBean.getCode());
             response.setShortDescriptionProduct(productBean.getShortDescription());
+            response.setPortWMSInUse(productBean.getPort());
 
             return response;
 

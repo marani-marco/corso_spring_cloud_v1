@@ -1,17 +1,10 @@
 package com.tapandget.warehousemanagementservice.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name="PRODUCTS")
-@Data
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Product {
 
     @Id
@@ -33,5 +26,73 @@ public class Product {
 
     private String status;
 
+    public Product() {
+    }
 
+    @Transient
+    private String port;
+
+    public BigDecimal getId() {
+        return id;
+    }
+
+    public void setId(BigDecimal id) {
+        this.id = id;
+    }
+
+    public BigDecimal getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(BigDecimal categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getNumberAvailability() {
+        return numberAvailability;
+    }
+
+    public void setNumberAvailability(int numberAvailability) {
+        this.numberAvailability = numberAvailability;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
 }
